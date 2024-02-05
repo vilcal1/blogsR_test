@@ -92,6 +92,12 @@ public class UserBean implements Serializable {
     }
     @Transactional
     public user actualizarUser(user User) {
+
+        String salt = generarSalt();
+        String passwordHash = cifrarConSalt(User.getPassword(), salt);
+
+        User.setSalt(salt);
+        User.setPassword(passwordHash);
         entityManager.merge(User);
         entityManager.flush();
         return User;
