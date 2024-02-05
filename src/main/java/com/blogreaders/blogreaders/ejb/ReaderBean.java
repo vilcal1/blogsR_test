@@ -29,6 +29,11 @@ public class ReaderBean {
         return entityManager.find(Reader.class, id);
     }
 
+    public Reader obtenerReaderConBlogs(Long id) {
+        return entityManager.createQuery("SELECT r FROM Reader r JOIN FETCH r.blogs WHERE r.readersId = :id", Reader.class)
+                .setParameter("id", id).getSingleResult();
+    }
+
     public List<Reader> obtenerTodasLasReaders() {
         return entityManager.createNamedQuery("encontrarAll", Reader.class).getResultList();
     }

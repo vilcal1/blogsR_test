@@ -9,13 +9,14 @@ import java.util.Set;
 
 @Table(name="blogs", schema="worksoft")
 @NamedQueries({@NamedQuery(name = "buscarTodo", query = "SELECT r FROM blogs r")
-               ,@NamedQuery(name = "mntob", query = "SELECT r FROM blogs r")})
+               ,@NamedQuery(name = "mntob", query = "SELECT r FROM blogs r"),
+    @NamedQuery(name = "blogConReaders", query = "SELECT r FROM blogs r JOIN FETCH r.readers WHERE r.id = :id")})
 @Entity
 public class blogs implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @Column(name = "title")
     private String title;
@@ -23,19 +24,14 @@ public class blogs implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @ManyToMany
-    @JoinTable(
-            name = "blog_reader",
-            joinColumns = @JoinColumn(name = "r_id"),
-            inverseJoinColumns = @JoinColumn(name = "b_id")
-    )
+    @ManyToMany(mappedBy = "blogs", fetch = FetchType.EAGER)
     private Set<Reader> readers = new HashSet<>();
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -53,5 +49,13 @@ public class blogs implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<Reader> getReaders() {
+        return readers;
+    }
+
+    public void setReaders(Set<Reader> readers) {
+        this.readers = readers;
     }
 }

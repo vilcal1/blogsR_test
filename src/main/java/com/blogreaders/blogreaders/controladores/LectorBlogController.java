@@ -1,8 +1,10 @@
 package com.blogreaders.blogreaders.controladores;
 
 
+import com.blogreaders.blogreaders.ejb.BlogsBean;
 import com.blogreaders.blogreaders.ejb.LectorBlogBean;
-import com.blogreaders.blogreaders.modelo.blogReaders;
+import com.blogreaders.blogreaders.ejb.ReaderBean;
+import com.blogreaders.blogreaders.modelo.Reader;
 import com.blogreaders.blogreaders.modelo.blogs;
 
 import javax.annotation.PostConstruct;
@@ -18,8 +20,21 @@ import java.util.List;
 public class LectorBlogController implements Serializable {
     @EJB
     private LectorBlogBean lectorBlogBean;
-    private blogReaders blogReaders;
-    private List<blogReaders> listaLectoresBlogs = new ArrayList<>();
+
+    @EJB
+    private ReaderBean readerBean;
+    @EJB
+    private BlogsBean blogBean;
+    private Reader reader;
+    private blogs blog;
+
+    private Integer readerId;
+
+    private Integer blogId;
+
+    private List<Reader> listaReaders = new ArrayList<>();
+    private List<blogs> listaBlogs = new ArrayList<>();
+
 
     // métodos para operaciones CRUD
 
@@ -28,63 +43,72 @@ public class LectorBlogController implements Serializable {
 
     @PostConstruct
     public void init() {
-        blogReaders = new blogReaders();
-        actualizarListaLectoresBlogs();
+        reader = new Reader();
+        listaReaders= readerBean.obtenerTodasLasReaders();
+        listaBlogs= blogBean.obtenerTodosLosBlogs();
     }
 
-
-
-    public void agregarLectoresBlogs() {
-        lectorBlogBean.agregarLectorBlog(blogReaders);
-        limpiar();
-        actualizarListaLectoresBlogs();
+    public void lectorSeleccionado(){
+        reader = readerBean.obtenerReader(Long.valueOf(readerId));
     }
 
-    public void obtenerLectorBlog(Long id) {
-        blogReaders = lectorBlogBean.obtenerLectorBlog(id);
+    public void blogSeleccionado(){
+        blog = blogBean.obtenerBlog(Long.valueOf(blogId));
     }
 
-    public void actualizarLectorBlog() {
-        lectorBlogBean.actualizarLectorBlog(blogReaders);
-        limpiar();
-        actualizarListaLectoresBlogs();
+    public void asignarBlogAlector() {
+        reader.getBlogs().add(blog);
+        blog.getReaders().add(reader);
+        lectorBlogBean.agregarLectorBlog(reader);
+        this.blogId= null;
+        this.readerId= null;
     }
 
-    public void eliminarLectorBlog() {
-        lectorBlogBean.eliminarLectorBlog(blogReaders);
-        limpiar();
-        actualizarListaLectoresBlogs();
+    public Reader getReader() {
+        return reader;
     }
 
-    private void actualizarListaLectoresBlogs() {
-        listaLectoresBlogs = lectorBlogBean.obtenerTodosLosLectoresBlogs();
+    public void setReader(Reader reader) {
+        this.reader = reader;
     }
 
-    private void limpiar() {
-        blogReaders = new blogReaders();
+    public blogs getBlog() {
+        return blog;
     }
 
-    public List<com.blogreaders.blogreaders.modelo.blogReaders> getListaLectoresBlogs() {
-        return listaLectoresBlogs;
+    public void setBlog(blogs blog) {
+        this.blog = blog;
     }
 
-    public void setListaLectoresBlogs(List<com.blogreaders.blogreaders.modelo.blogReaders> listaLectoresBlogs) {
-        this.listaLectoresBlogs = listaLectoresBlogs;
+    public List<Reader> getListaReaders() {
+        return listaReaders;
     }
 
-    public LectorBlogBean getLectorBlogBean() {
-        return lectorBlogBean;
+    public void setListaReaders(List<Reader> listaReaders) {
+        this.listaReaders = listaReaders;
     }
 
-    public void setLectorBlogBean(LectorBlogBean lectorBlogBean) {
-        this.lectorBlogBean = lectorBlogBean;
+    public List<blogs> getListaBlogs() {
+        return listaBlogs;
     }
 
-    public com.blogreaders.blogreaders.modelo.blogReaders getBlogReaders() {
-        return blogReaders;
+    public void setListaBlogs(List<blogs> listaBlogs) {
+        this.listaBlogs = listaBlogs;
     }
 
-    public void setBlogReaders(com.blogreaders.blogreaders.modelo.blogReaders blogReaders) {
-        this.blogReaders = blogReaders;
+    public Integer getReaderId() {
+        return readerId;
+    }
+
+    public void setReaderId(Integer readerId) {
+        this.readerId = readerId;
+    }
+
+    public Integer getBlogId() {
+        return blogId;
+    }
+
+    public void setBlogId(Integer blogId) {
+        this.blogId = blogId;
     }
 }

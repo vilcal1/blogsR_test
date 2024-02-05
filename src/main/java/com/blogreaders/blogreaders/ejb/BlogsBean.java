@@ -30,6 +30,11 @@ public class BlogsBean implements Serializable {
         return entityManager.find(blogs.class, id);
     }
 
+    public blogs obtenerBlogConReaders(Long id) {
+        return entityManager.createNamedQuery("blogConReaders", blogs.class)
+                .setParameter("id", id).getSingleResult();
+    }
+
     public List<blogs> obtenerTodosLosBlogs() {
         return entityManager.createNamedQuery("buscarTodo", blogs.class).getResultList();
     }
