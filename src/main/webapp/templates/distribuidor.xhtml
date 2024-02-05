@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+    <title>
+        <ui:insert name="title">banco</ui:insert>
+    </title>
+
+    <h:outputStylesheet library="primefaces-bootstrap" name="theme.css"/>
+
+</h:head>
+<h:body>
+    <table id="tablaHTML" style="width: 100%">
+        <TR>
+            <Td colspan="2" width="100%" style="alignment: center">
+                <ui:insert name="header" >
+                    <ui:include src="/templates/titulo.xhtml" />
+                </ui:insert>
+            </Td>
+        </TR>
+
+    <TR>
+            <Td width="20%">
+                <div id="menu">
+
+                    <ui:insert name="menu" >
+                        <ui:include src="/templates/menu.xhtml" />
+                    </ui:insert>
+                </div>
+            </Td>
+            <Td id="contenido" width="80%">
+                <div id="content">
+                    <ui:insert name="content" >
+
+                    </ui:insert>
+                </div>
+
+            </Td>
+        </TR>
+
+    </table>
+    <h:outputScript library="js" name="script.js"/>
+</h:body>
+</html>

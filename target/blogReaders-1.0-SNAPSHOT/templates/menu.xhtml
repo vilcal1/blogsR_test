@@ -1,0 +1,30 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui">
+
+    <div >
+        <h5 style="left: auto">Menu Principal</h5>
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
+        <p:tieredMenu style="width:100%">
+            <p:submenu label="Reader" icon="pi pi-fw pi-file" >
+                <p:menuitem value="Gestionar" url="reader.xhtml" />
+            </p:submenu>
+
+            <p:submenu label="Blogs" icon="pi pi-fw pi-pencil">
+                <p:menuitem value="Gestionar" url="blogs.xhtml" />
+            </p:submenu>
+
+            <p:submenu label="Reader por Blog" icon="pi pi-fw pi-user">
+                <p:menuitem value="Gestionar" url="lectorBlog.xhtml" />
+            </p:submenu>
+
+            <p:submenu label="Usuarios" icon="pi pi-fw pi-user">
+                <p:menuitem value="Gestionar" url="user.xhtml" />
+            </p:submenu>
+            <p:menuitem value="Quit" icon="pi pi-fw pi-power-off"/>
+        </p:tieredMenu>
+    </div>
+
+</ui:composition>

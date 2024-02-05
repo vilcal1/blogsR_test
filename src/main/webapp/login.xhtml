@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://primefaces.org/ui">
+<p:head>
+    <title>Login</title>
+</p:head>
+<p:body>
+    <h:growl id="growl" sticky="true" showDetail="true" life="3000" />
+    <p:form>
+        <p:outputLink value="javascript:void(0)" onclick="PF('dlg').show();" title="login" >
+            <p:graphicImage name="/imagenes/bdsal.png" width="100%"/>
+        </p:outputLink>
+    <h:dialog header="Login" widgetVar="dlg" resizable="false">
+        <h:panelGrid columns="2" cellpadding="5">
+            <h:outputLabel for="username" value="Username:" />
+            <p:inputText size="10" id="username" value="#{loginController.username}"
+                         required="true" label="username" />
+
+            <h:outputLabel for="password" value="Password:" />
+            <h:password size="10" id="password" value="#{loginController.password}"
+                        required="true" label="password" />
+
+            <f:facet name="footer">
+                <p:commandButton value="Login" update="growl"
+                                 action="#{loginController.iniciarSesion()}"
+                                 oncomplete="handleLoginRequest(xhr, status, args)" />
+            </f:facet>
+        </h:panelGrid>
+    </h:dialog>
+    </p:form>
+    <script type="text/javascript">
+        function handleLoginRequest(xhr, status, args) {
+            if(args.validationFailed || !args.loggedIn) {
+                PF('dlg').jq.effect("shake", {times:5}, 100);
+            }
+            else {
+                PF('dlg').show();
+                $('#loginLink').fadeOut();
+            }
+        }
+    </script>
+</p:body>
+</html>

@@ -1,0 +1,62 @@
+<ui:composition template="../templates/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <!--    se puede usar para agregar estilos propios o codigo javascript-->
+    <ui:define name="head">
+
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:form id="dato">
+
+            <table border="1">
+                <tr>
+                    <td>Codigo de Lector</td>
+                    <td><p:inputText id="rr" value="#{blogsController.blogs.id}" /></td>
+                </tr>
+                <tr>
+                    <td>Titulo</td>
+                    <td><h:inputText id="title" value="#{blogsController.blogs.title}" required="true"
+                                     requiredMessage="Titulo es requerido." maxlength="8"/>
+                        <p:message for="title"/></td>
+                </tr>
+                <tr>
+                    <td>Descripcion</td>
+                    <td><h:inputText id="descrip" value="#{blogsController.blogs.description}" required="true"
+                                     requiredMessage="Descripcion es requerido." maxlength="8"/>
+                        <p:message for="descrip"/></td>
+                </tr>
+            </table>
+            <!--s
+       El id es autonumerico, por eso no se incluyó-->
+
+
+            <!-- Buttons to trigger CRUD operations -->
+            <p:commandButton value="Agregar" action="#{blogsController.agregarBlogs}" update="datos" process="@form"/>
+            <p:commandButton value="Actualizar" action="#{blogsController.actualizarBlog}" update="datos" process="@form"/>
+            <p:commandButton value="Eliminar" action="#{blogsController.eliminarBlog}" update="datos" process="@form"/>
+            <p><span style="color: red;">Si desea Actualizar y/o Eliminar, ingrese el id y el nombre y escoja la funcion a realizar </span> </p>
+        </h:form>
+
+        <!-- Table to display list of lectores -->
+        <p:dataTable id="datos" value="#{lectorBlogController.listaLectoresBlogs}" var="p">
+            <f:facet name="header">
+                Listado de Blogs
+            </f:facet>
+            <p:column headerText="Identificador">#{p.id}</p:column>
+            <p:column headerText="Titulo">#{p.title}</p:column>
+            <p:column headerText="Descripcion">#{p.description}</p:column>
+
+            <!--<p:column>
+                <p:commandLink value="Editar" action="#{readerController.obtenerPersona(p.id)}" />
+                 pensando despues poner botones de eliminar y editar en el mismo form
+            </p:column> -->
+        </p:dataTable>
+
+    </ui:define>
+</ui:composition>

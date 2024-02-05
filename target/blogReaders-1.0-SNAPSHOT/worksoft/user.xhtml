@@ -1,0 +1,59 @@
+<ui:composition template="../templates/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <!--    se puede usar para agregar estilos propios o codigo javascript-->
+    <ui:define name="head">
+
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:form id="dato">
+            <table border="1">
+
+                <tr>
+                    <td>codigo</td>
+
+                    <td><p:inputText id="rr" value="#{userController.users.id}"  /> </td>
+                </tr>
+                <tr>
+                    <td>Nombre de Usuario</td>
+                    <td><h:inputText id="name" value="#{userController.users.username}" required="true"
+                                     requiredMessage="Nombre es requerido." maxlength="8"/></td>
+                </tr>
+                <tr>
+                    <td>Contraseña</td>
+                    <td><h:inputText id="pwd" value="#{userController.users.password}" required="true"
+                                     requiredMessage="Nombre es requerido." maxlength="8"/></td>
+                </tr>
+            </table>
+
+            <!--s
+        El id es autonumerico, por eso no se incluyó-->
+
+
+            <!-- Buttons to trigger CRUD operations -->
+            <p:commandButton value="Agregar" action="#{userController.agregarUser}" update="datos" process="@form"/>
+            <p:commandButton value="Actualizar" action="#{userController.actualizarUser}" update="datos" process="@form"/>
+            <p:commandButton value="Eliminar" action="#{userController.eliminarUser}" update="datos" process="@form"/>
+        </h:form>
+
+        <!-- Table to display list of lectores -->
+        <p:dataTable id="datos" value="#{userController.listaUser}" var="p">
+            <f:facet name="header">
+                Listado de users
+            </f:facet>
+            <p:column headerText="Identificador">#{p.id}</p:column>
+            <p:column headerText="Descripcion">#{p.username}</p:column>
+            <!--<p:column>
+                <p:commandLink value="Editar" action="#{userController.obtenerPersona(p.id)}" />
+                 pensando despues poner botones de eliminar y editar en el mismo form
+            </p:column> -->
+        </p:dataTable>
+
+    </ui:define>
+</ui:composition>
