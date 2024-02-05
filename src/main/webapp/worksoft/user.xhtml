@@ -47,8 +47,9 @@
             <f:facet name="header">
                 Listado de users
             </f:facet>
-            <p:column headerText="Identificador">#{p.id}</p:column>
+            <p:column width ="10%" headerText="Identificador">#{p.id}</p:column>
             <p:column headerText="Descripcion">#{p.username}</p:column>
+            <p:column headerText="Nombre de Usuario">#{p.username}</p:column>
             <!--<p:column>
                 <p:commandLink value="Editar" action="#{userController.obtenerPersona(p.id)}" />
                  pensando despues poner botones de eliminar y editar en el mismo form
