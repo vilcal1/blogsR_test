@@ -12,51 +12,56 @@
 
     <ui:define name="content">
 
-        <h:form id="dato">
+        <h:form>
+            <div class="ui-fluid formgrid grid">
+                <div class="field col-12 md:col-4">
+                    <p:outputLabel for="@next" value="Lectores"/>
+                    <p:selectOneMenu id="somLectores" value="#{lectorBlogController.readerId}">
+                        <f:selectItem itemLabel="Select One" itemValue=""/>
+                        <f:selectItems value="#{lectorBlogController.listaReaders}"
+                                       var="lector"
+                                       itemLabel="#{lector.readersName}"
+                                       itemValue="#{lector.readersId}"/>
+                        <p:ajax event="change" update="datos"
+                                process="@this" listener="#{lectorBlogController.lectorSeleccionado()}"/>
+                    </p:selectOneMenu>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <p:outputLabel for="@next" value="Blogs"/>
+                    <p:selectOneMenu id="somBlogs" value="#{lectorBlogController.blogId}">
+                        <f:selectItem itemLabel="Select One" itemValue=""/>
+                        <f:selectItems value="#{lectorBlogController.listaBlogs}"
+                                       var="blog"
+                                       itemLabel="#{blog.title}"
+                                       itemValue="#{blog.id}"/>
+                        <p:ajax event="change" update="datos"
+                                process="@this" listener="#{lectorBlogController.blogSeleccionado()}" />
+                    </p:selectOneMenu>
+                </div>
+                <div class="field col-12 md:4">
+                    <p:commandButton value="Agregar"
+                                     actionListener="#{lectorBlogController.asignarBlogAlector()}"
+                                     update="@form"
+                                     process="@form"/>
+                </div>
+            </div>
 
-            <table border="1">
-                <tr>
-                    <td>Codigo de Lector</td>
-                    <td><p:inputText id="rr" value="#{lectorBlogController.blogs.id}" /></td>
-                </tr>
-                <tr>
-                    <td>Titulo</td>
-                    <td><h:inputText id="title" value="#{blogsController.blogs.title}" required="true"
-                                     requiredMessage="Titulo es requerido." maxlength="8"/>
-                        <p:message for="title"/></td>
-                </tr>
-                <tr>
-                    <td>Descripcion</td>
-                    <td><h:inputText id="descrip" value="#{blogsController.blogs.description}" required="true"
-                                     requiredMessage="Descripcion es requerido." maxlength="8"/>
-                        <p:message for="descrip"/></td>
-                </tr>
-            </table>
-            <!--s
-       El id es autonumerico, por eso no se incluyó-->
-
-
-            <!-- Buttons to trigger CRUD operations -->
-            <p:commandButton value="Agregar" action="#{blogsController.agregarBlogs}" update="datos" process="@form"/>
-            <p:commandButton value="Actualizar" action="#{blogsController.actualizarBlog}" update="datos" process="@form"/>
-            <p:commandButton value="Eliminar" action="#{blogsController.eliminarBlog}" update="datos" process="@form"/>
-            <p><span style="color: red;">Si desea Actualizar y/o Eliminar, ingrese el id y el nombre y escoja la funcion a realizar </span> </p>
+            <!-- Table to display list of lectores -->
+            <p:dataTable id="datos" value="#{lectorBlogController.reader.blogs}" var="p">
+                <f:facet name="header">
+                    Listado de blogs para el lector #{lectorBlogController.reader.readersName}
+                </f:facet>
+                <p:column headerText="Codigo de Blog">
+                    <h:outputText value="#{p.id}"/>
+                </p:column>
+                <p:column headerText="Titulo de Blog">
+                    <h:outputText value="#{p.title}"/>
+                </p:column>
+                <p:column headerText="Descripcion de Blog">
+                    <h:outputText value="#{p.description}"/>
+                </p:column>
+            </p:dataTable>
         </h:form>
-
-        <!-- Table to display list of lectores -->
-        <p:dataTable id="datos" value="#{lectorBlogController.listaLectoresBlogs}" var="p">
-            <f:facet name="header">
-                Listado de Blogs
-            </f:facet>
-            <p:column headerText="Identificador">#{p.id}</p:column>
-            <p:column headerText="Titulo">#{p.title}</p:column>
-            <p:column headerText="Descripcion">#{p.description}</p:column>
-
-            <!--<p:column>
-                <p:commandLink value="Editar" action="#{readerController.obtenerPersona(p.id)}" />
-                 pensando despues poner botones de eliminar y editar en el mismo form
-            </p:column> -->
-        </p:dataTable>
 
     </ui:define>
 </ui:composition>
