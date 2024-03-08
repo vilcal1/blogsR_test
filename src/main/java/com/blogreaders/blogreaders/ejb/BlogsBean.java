@@ -4,6 +4,7 @@ import com.blogreaders.blogreaders.modelo.blogs;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.io.Serializable;
@@ -19,15 +20,26 @@ public class BlogsBean implements Serializable {
 
     @Transactional
     public blogs agregarBlog(blogs Blogs) {
-        /*blogs managedEntity = entityManager
-                .find(blogs.class, blogs.class.getModifiers());*/
         entityManager.merge(Blogs);
-        /*entityManager.getTransaction().commit();*/
         return Blogs;
     }
 
     public blogs obtenerBlog(Long id) {
         return entityManager.find(blogs.class, id);
+    }
+
+    public boolean obtenerBlogPorTitulo(String title) {
+        blogs datos = new blogs();
+        try {
+        datos = entityManager.createQuery("SELECT b FROM blogs b WHERE b.title = :title", blogs.class)
+                .setParameter("title", title)
+                .getSingleResult();
+
+            return true;
+        }
+        catch(NoResultException e){}
+        return false;
+
     }
 
     public blogs obtenerBlogConReaders(Long id) {
@@ -40,10 +52,13 @@ public class BlogsBean implements Serializable {
     }
     @Transactional
     public blogs actualizarBlog(blogs Blogs) {
-        entityManager.merge(Blogs);
-        entityManager.flush();
+        {
+            entityManager.merge(Blogs);
+            entityManager.flush();
+        }
         return Blogs;
     }
+
 
     @Transactional
     public void eliminarBlog(blogs Blogs) {

@@ -2,9 +2,12 @@ package com.blogreaders.blogreaders.controladores;
 
 import com.blogreaders.blogreaders.ejb.ReaderBean;
 import com.blogreaders.blogreaders.modelo.Reader;
+import org.primefaces.PrimeFaces;
+import org.primefaces.context.PrimeFacesContext;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
@@ -13,7 +16,7 @@ import java.util.List;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 
-@ManagedBean(name="readerController")
+@ManagedBean(name = "readerController")
 @ViewScoped
 public class ReaderController implements Serializable {
     @EJB
@@ -33,7 +36,6 @@ public class ReaderController implements Serializable {
     }
 
 
-
     public void agregarReader() {
         readerBean.agregarReader(reader);
         limpiar();
@@ -45,15 +47,25 @@ public class ReaderController implements Serializable {
     }
 
     public void actualizarReader() {
-        readerBean.actualizarReader(reader);
-        limpiar();
-        actualizarListaReaders();
+        boolean buscaReader;
+        buscaReader = readerBean.obtenerLectorPorNombre(reader.getName());
+
+        if (!buscaReader) {
+            readerBean.actualizarReader(reader);
+            limpiar();
+            actualizarListaReaders();
+            PrimeFaces.current().executeScript("PF('manageReaderDialog').hide()");
+        } else
+            PrimeFacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "error", "ya existe ese registro"));
+
     }
 
     public void eliminarReader() {
         readerBean.eliminarReader(reader);
         limpiar();
         actualizarListaReaders();
+        PrimeFaces.current().executeScript("PF('borraReaderDialog').hide()");
+
     }
 
     private void actualizarListaReaders() {

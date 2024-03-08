@@ -9,17 +9,17 @@ import java.util.Set;
 @Table(name="reader", schema="worksoft")
 @NamedQueries({@NamedQuery(name = "encontrarAll", query = "SELECT r FROM Reader r")
               ,@NamedQuery(name = "mntor", query = "SELECT r FROM Reader r")
-, @NamedQuery(name = "readerConBlogs", query = "SELECT r FROM Reader r JOIN FETCH r.blogs WHERE r.readersId = :id")})
+, @NamedQuery(name = "readerConBlogs", query = "SELECT r FROM Reader r JOIN FETCH r.blogs WHERE r.id = :id")})
 @Entity
 public class Reader implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private Long readersId;
+    private Long id;
 
     @Column(name = "name")
-    private String readersName;
+    private String name;
 
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
@@ -33,21 +33,20 @@ public class Reader implements Serializable {
     )
     private Set<com.blogreaders.blogreaders.modelo.blogs> blogs = new HashSet<>();
 
-    public Long getReadersId() {
-        return readersId;
+    public Long getId() {
+        return id;
     }
 
-    public void setReadersId(Long readersId) {
-        this.readersId = readersId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-
-    public String getReadersName() {
-        return readersName;
+    public String getName() {
+        return name;
     }
 
-    public void setReadersName(String readersName) {
-        this.readersName = readersName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Set<com.blogreaders.blogreaders.modelo.blogs> getBlogs() {

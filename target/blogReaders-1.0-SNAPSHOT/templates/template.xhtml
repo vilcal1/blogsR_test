@@ -5,23 +5,20 @@
 
 <h:head>
     <title>Blog Reader</title>
-    <h:outputStylesheet library="primeflex" name="primeflex.css"/>
-    <h:outputStylesheet library="primefaces-bootstrap" name="theme.css"/>
+    <h:outputStylesheet library="primefaces-saga" name="theme.css"/>
     <ui:insert name="head"/>
 </h:head>
 <h:body>
-    <div id="container" class="container-fluid">
-        <div id="header">
+    <div >
+        <div id="header" style="text-align:center">
             <h1>BANCO DE DESARROLLO DEL SALVADOR</h1>
         </div>
-        <div class="flex align-items-center justify-content-start">
-            <div class="w-3 bg-primary font-bold p-4 border-round mr-3">
+            <div style="width: 20%; float:left;">
                 <ui:include src="menu.xhtml"></ui:include>
             </div>
-            <div class="w-9 justify-content-center p-4 border-round mr-3">
+            <div style="width: 80%; float:right; margin-top: 3em">
                 <ui:insert name="content">Contenido específico de la página principal</ui:insert>
             </div>
-        </div>
     </div>
 </h:body>
 </html>

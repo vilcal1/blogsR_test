@@ -5,56 +5,117 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
 
-<!--    se puede usar para agregar estilos propios o codigo javascript-->
-    <ui:define name="head">
 
-    </ui:define>
-
-    <ui:define name="content">
-
+    <ui:define name="content" >
+        <div class="card crud-demo">
         <h:form id="dato">
+            <p:growl id="messages" showDetail="true"/>
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <p:commandButton value="Nuevo" icon="pi pi-plus"
+                                     update=":dialogBlog:manage-dialog-content dato:datos"
+                                     oncomplete="PF('manageBlogDialog').show()"
+                                     styleClass="ui-button-success"
+                                     tyle="margin-right: .5rem">
+                        <p:resetInput target=":dialogBlog:manage-dialog-content" />
+                    </p:commandButton>
+                    <p:commandButton id="delete-blog-button"
+                                     value="Eliminar"
+                                     icon="pi pi-trash"
+                                     styleClass="ui-button-danger"
+                                     update="@this" rendered="false">
+                        <p:confirm header="Confirmation" message="Esta seguro de borrar el blog?"
+                                   icon="pi pi-exclamation-triangle" />
+                    </p:commandButton>
+                </p:toolbarGroup>
 
-            <table border="1">
-                <tr>
-                    <td>Codigo del blog</td>
-                    <td><p:inputText id="rr" value="#{blogsController.blogs.id}" /></td>
-                </tr>
-                <tr>
-                    <td>Titulo</td>
-                    <td><h:inputText id="title" value="#{blogsController.blogs.title}" required="true"
-                                     requiredMessage="Titulo es requerido." maxlength="8"/></td>
-                </tr>
-                <tr>
-                    <td>Descripcion</td>
-                    <td><h:inputText id="descrip" value="#{blogsController.blogs.description}" required="true"
-                                     requiredMessage="Descripcion es requerido." maxlength="8"/></td>
-                </tr>
+            </p:toolbar>
 
-            </table>
-             <!--s
-        El id es autonumerico, por eso no se incluyó-->
+            <!--        aca inicia el datatable que presenta los bloqs   -->
+            <p:dataTable id="datos" widgetVar="dtBlogs" sortBy="#{datosBlogs.id}"
+                         var="datosBlogs"
+                         reflow="true"
+                         rowKey="#{datosBlogs.id}"
+                         paginator="true" rows="10"
+                         rowSelectMode="add"
+                         paginatorPosition="bottom"
+                         value="#{blogsController.listaBlogs}" size="50%"
+            >
 
+                <p:column headerText="Id" sortBy="#{datosBlogs.id}" sortOrder="descending">#{datosBlogs.id}</p:column>
+                <p:column headerText="Titulo">#{datosBlogs.title}</p:column>
+                <p:column headerText="Descripcion">#{datosBlogs.description}</p:column>
 
-            <!-- Buttons to trigger CRUD operations -->
-            <p:commandButton value="Agregar" action="#{blogsController.agregarBlogs}" update="datos" process="@form"/>
-            <p:commandButton value="Actualizar" action="#{blogsController.actualizarBlog}" update="datos" process="@form"/>
-            <p:commandButton value="Eliminar" action="#{blogsController.eliminarBlog}" update="datos" process="@form"/>
+                <p:ajax event="rowSelect" update=":dato:delete-blog-button" />
+                <p:ajax event="toggleSelect" update=":dato:delete-blog-button" />
+                <!--            columnas para la gestion del blog (editar y borrar)-->
+                <p:column exportable="false">
+                    <p:commandButton icon="pi pi-pencil"
+                                     process="@this" widgetVar="editar"
+                                     oncomplete="PF('manageBlogDialog').show()"
+                                     styleClass="edit-button rounded-button ui-button-success"
+                                     update=":dialogBlog:manage-dialog-content">
+                        <f:setPropertyActionListener value="#{datosBlogs}" target="#{blogsController.blogs}"/>
+                    </p:commandButton>
+                    <p:commandButton class="ui-button-warning rounded-button"
+                                     icon="pi pi-trash"
+                                     process="@this"
+                                     oncomplete="PF('borraBlogDialog').show()"
+                                     update=":dialogBlog:manage-dialog-content">
+                        <f:setPropertyActionListener value="#{datosBlogs}" target="#{blogsController.blogs}"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
         </h:form>
 
-        <!-- Table to display list of lectores -->
-        <p:dataTable id="datos" value="#{blogsController.listaBlogs}" var="p">
-            <f:facet name="header">
-                Listado de Blogs
-            </f:facet>
-            <p:column headerText="Identificador">#{p.id}</p:column>
-            <p:column headerText="Titulo">#{p.title}</p:column>
-            <p:column headerText="Descripcion">#{p.description}</p:column>
+        <!--inicio de los dialogos-->
+        <h:form id="dialogBlog">
+            <p:dialog header="Registro/Edición de Blogs" showEffect="fade"
+                      modal="true"
+                      widgetVar="manageBlogDialog"
+                      responsive="true">
+                <p:outputPanel id="manage-dialog-content" class="ui-fluid">
+                    <p:outputPanel >
+                        <div class="field">
+                            <p:outputLabel for="name">Titulo</p:outputLabel>
+                            <p:inputText id="name" value="#{blogsController.blogs.title}" required="true" />
+                        </div>
+                        <div class="field">
+                            <p:outputLabel for="description">Descripcion</p:outputLabel>
+                            <p:inputTextarea id="description" value="#{blogsController.blogs.description}" />
+                        </div>
 
-            <!--<p:column>
-                <p:commandLink value="Editar" action="#{readerController.obtenerPersona(p.id)}" />
-                 pensando despues poner botones de eliminar y editar en el mismo form
-            </p:column> -->
-        </p:dataTable>
+                    </p:outputPanel>
+                </p:outputPanel>
 
+
+                <f:facet name="footer">
+                    <p:commandButton value="Guardar" icon="pi pi-check" id="guardar"
+                                     update="manage-dialog-content dato:datos"
+                                     process="manage-dialog-content @this"
+                                     actionListener="#{blogsController.actualizarBlog}" />
+                    <p:commandButton value="Cancelar" icon="pi pi-times"
+                                     onclick="PF('manageBlogDialog').hide()"
+                                     class="ui-button-secondary" type="button" />
+                </f:facet>
+            </p:dialog>
+
+            <!--dialogo de confirmacion de borrado-->
+            <p:confirmDialog widgetVar="borraBlogDialog" showEffect="fade" width="300"
+                             message="Esta seguro de borrar el Blog?" header="Confirmar" severity="warn">
+                <p:commandButton value="Yes" icon="pi pi-check" actionListener="#{blogsController.eliminarBlog}"
+                                 process="@this"
+                                 update=":dato:datos"
+                                 />
+                <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                                 onclick="PF('borraBlogDialog').hide()" />
+            </p:confirmDialog>
+
+
+            <!--Dialogo de confirmacion de edicion-->
+
+        </h:form>
+
+        </div>
     </ui:define>
 </ui:composition>

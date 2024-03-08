@@ -6,6 +6,7 @@ import com.blogreaders.blogreaders.modelo.blogs;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -18,19 +19,32 @@ public class ReaderBean {
 
     @Transactional
     public Reader agregarReader(Reader Reader) {
-       /* entityManager.createNamedQuery("mntor", blogs.class).getResultList();*/
         entityManager.merge(Reader);
-        /*entityManager.persist(Reader);*/
         entityManager.flush();
         return Reader;
     }
+
+    public boolean obtenerLectorPorNombre(String nombre) {
+        Reader lector = new Reader();
+        try {
+            lector = entityManager.createQuery("SELECT r FROM Reader r WHERE r.name = :name", Reader.class)
+                    .setParameter("name", nombre)
+                    .getSingleResult();
+
+            return true;
+        }
+        catch(NoResultException e){}
+        return false;
+
+    }
+
 
     public Reader obtenerReader(Long id) {
         return entityManager.find(Reader.class, id);
     }
 
     public Reader obtenerReaderConBlogs(Long id) {
-        return entityManager.createQuery("SELECT r FROM Reader r JOIN FETCH r.blogs WHERE r.readersId = :id", Reader.class)
+        return entityManager.createQuery("SELECT r FROM Reader r JOIN FETCH r.blogs WHERE r.id = :id", Reader.class)
                 .setParameter("id", id).getSingleResult();
     }
 
@@ -46,7 +60,7 @@ public class ReaderBean {
 
     @Transactional
     public void eliminarReader(Reader Reader) {
-        Reader = entityManager.find(Reader.class, Reader.getReadersId());
+        Reader = entityManager.find(Reader.class, Reader.getId());
         if (Reader != null) {
             entityManager.remove(Reader);
         }

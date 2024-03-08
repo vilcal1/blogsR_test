@@ -2,9 +2,12 @@ package com.blogreaders.blogreaders.controladores;
 
 import com.blogreaders.blogreaders.ejb.BlogsBean;
 import com.blogreaders.blogreaders.modelo.blogs;
+import org.primefaces.context.PrimeFacesContext;
+import org.primefaces.PrimeFaces;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
@@ -18,6 +21,7 @@ public class BlogsController implements Serializable {
     private BlogsBean blogsBean;
     private blogs Blogs;
     private List<blogs> listaBlogs = new ArrayList<>();
+
 
     // métodos para operaciones CRUD
 
@@ -36,22 +40,40 @@ public class BlogsController implements Serializable {
         blogsBean.agregarBlog(Blogs);
         limpiar();
         actualizarListaBlogs();
+        PrimeFaces.current().executeScript("PF('confirmaAgregaBlogDialog').show()");
     }
 
     public void obtenerBlog(Long id) {
         Blogs = blogsBean.obtenerBlog(id);
     }
 
+
+
     public void actualizarBlog() {
-        blogsBean.actualizarBlog(Blogs);
-        limpiar();
-        actualizarListaBlogs();
+            boolean buscaBlog;
+            buscaBlog = blogsBean.obtenerBlogPorTitulo(Blogs.getTitle());
+
+            if (!buscaBlog) {
+                blogsBean.actualizarBlog(Blogs);
+                limpiar();
+                actualizarListaBlogs();
+                PrimeFaces.current().executeScript("PF('manageBlogDialog').hide()");
+            }
+            else
+                PrimeFacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"error","ya existe ese registro"));
+
     }
+
+
+
+
 
     public void eliminarBlog() {
         blogsBean.eliminarBlog(Blogs);
         limpiar();
         actualizarListaBlogs();
+        PrimeFaces.current().executeScript("PF('borraBlogDialog').hide()");
+
     }
 
     private void actualizarListaBlogs() {

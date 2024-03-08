@@ -5,28 +5,23 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
 
-    <!--    se puede usar para agregar estilos propios o codigo javascript-->
-    <ui:define name="head">
-
-    </ui:define>
-
     <ui:define name="content">
 
         <h:form>
-            <div class="ui-fluid formgrid grid">
-                <div class="field col-12 md:col-4">
+            <div class="card crud-demo">
+                <div class="field col-12 md:col-3">
                     <p:outputLabel for="@next" value="Lectores"/>
                     <p:selectOneMenu id="somLectores" value="#{lectorBlogController.readerId}">
                         <f:selectItem itemLabel="Select One" itemValue=""/>
                         <f:selectItems value="#{lectorBlogController.listaReaders}"
                                        var="lector"
-                                       itemLabel="#{lector.readersName}"
-                                       itemValue="#{lector.readersId}"/>
+                                       itemLabel="#{lector.name}"
+                                       itemValue="#{lector.id}"/>
                         <p:ajax event="change" update="datos"
                                 process="@this" listener="#{lectorBlogController.lectorSeleccionado()}"/>
                     </p:selectOneMenu>
                 </div>
-                <div class="field col-12 md:col-4">
+                <div class="field col-12 md:col-3">
                     <p:outputLabel for="@next" value="Blogs"/>
                     <p:selectOneMenu id="somBlogs" value="#{lectorBlogController.blogId}">
                         <f:selectItem itemLabel="Select One" itemValue=""/>
@@ -38,19 +33,24 @@
                                 process="@this" listener="#{lectorBlogController.blogSeleccionado()}" />
                     </p:selectOneMenu>
                 </div>
-                <div class="field col-12 md:4">
-                    <p:commandButton value="Agregar"
-                                     actionListener="#{lectorBlogController.asignarBlogAlector()}"
-                                     update="@form"
-                                     process="@form"/>
-                </div>
-            </div>
 
+            </div>
+            <p:toolbar>
+
+                <p:toolbarGroup>
+                    <p:commandButton value="Agregar" icon="pi pi-plus"
+                                     actionListener="#{lectorBlogController.asignarBlogAlector()}"
+                                     oncomplete="PF('manageReaderDialog').show()"
+                                     styleClass="ui-button-success"
+                                     style="margin-right: .5rem" update="@form"
+                                     process="@form">
+                    </p:commandButton>
+
+                </p:toolbarGroup>
+            </p:toolbar>
             <!-- Table to display list of lectores -->
             <p:dataTable id="datos" value="#{lectorBlogController.reader.blogs}" var="p">
-                <f:facet name="header">
-                    Listado de blogs para el lector #{lectorBlogController.reader.readersName}
-                </f:facet>
+
                 <p:column headerText="Codigo de Blog">
                     <h:outputText value="#{p.id}"/>
                 </p:column>
